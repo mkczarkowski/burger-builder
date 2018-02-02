@@ -2,11 +2,19 @@ import React from "react";
 
 import classes from "./BuildControl.css";
 
-const buildControl = ({label, ingredientAdded}) => (
+const buildControl = props => (
   <div className={classes.BuildControl}>
-    <div className={classes.Label}>{label}</div>
-    <button className={classes.Less}>Less</button>
-    <button className={classes.More} onClick={ingredientAdded}>More</button>
+    <div className={classes.Label}>{props.label}</div>
+    <button
+      className={classes.Less}
+      disabled={props.disabled}
+      onClick={props.ingredientRemoved}
+    >
+      Less
+    </button>
+    <button className={classes.More} onClick={props.ingredientAdded}>
+      More
+    </button>
   </div>
 );
 
