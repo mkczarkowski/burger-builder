@@ -9,4 +9,8 @@ const logo = ({height}) => (
   </div>
 );
 
+logo.defaultProps = {
+  height: "80%"
+};
+
 export default logo;
