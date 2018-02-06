@@ -44,26 +44,26 @@ class BurgerBuilder extends Component {
   }
 
   addIngredientHandler(type) {
-    this.setState(prevState => {
+    this.setState(({ ingredients, totalPrice }) => {
       return {
         ingredients: {
-          ...prevState.ingredients,
-          [type]: prevState.ingredients[type] + 1
+          ...ingredients,
+          [type]: ingredients[type] + 1
         },
-        totalPrice: prevState.totalPrice + INGREDIENT_PRICES[type]
+        totalPrice: totalPrice + INGREDIENT_PRICES[type]
       };
     }, this.updatePurchaseableState);
   }
 
   removeIngredientHandler(type) {
-    this.setState(prevState => {
-      if (prevState.ingredients[type] > 0) {
+    this.setState(({ ingredients, totalPrice }) => {
+      if (ingredients[type] > 0) {
         return {
           ingredients: {
-            ...prevState.ingredients,
-            [type]: prevState.ingredients[type] - 1
+            ...ingredients,
+            [type]: ingredients[type] - 1
           },
-          totalPrice: prevState.totalPrice - INGREDIENT_PRICES[type]
+          totalPrice: totalPrice - INGREDIENT_PRICES[type]
         };
       }
     }, this.updatePurchaseableState);

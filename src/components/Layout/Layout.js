@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
 
 import Toolbar from "../Navigation/Toolbar/Toolbar";
 import SideDrawer from "../Navigation/SideDrawer/SideDrawer";
@@ -10,7 +11,7 @@ class Layout extends Component {
     this.sideDrawerClosedHandler = this.sideDrawerClosedHandler.bind(this);
     this.sideDrawerToggleHandler = this.sideDrawerToggleHandler.bind(this);
     this.state = {
-      showSideDrawer: true
+      showSideDrawer: document.body.clientWidth < 500,
     };
   }
 
@@ -37,5 +38,9 @@ class Layout extends Component {
     );
   }
 }
+
+Layout.propTypes = {
+  children: PropTypes.element.isRequired
+};
 
 export default Layout;
