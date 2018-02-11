@@ -5,7 +5,7 @@ import classes from "./Button.css";
 const button = props => (
   <button
     className={[classes.Button, classes[props.type]].join(" ")}
-    onClick={props.clicked}
+    onClick={props.handleClick}
   >
     {props.children}
   </button>

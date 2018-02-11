@@ -7,7 +7,7 @@ import classes from "./Toolbar.css";
 
 const toolbar = props => (
   <header className={classes.Toolbar}>
-    <DrawerToggle clicked={props.toggleClicked}>MENU</DrawerToggle>
+    <DrawerToggle handleClick={props.togglehandleClick}>MENU</DrawerToggle>
     <Logo height="80%" />
     <nav className={classes.DesktopOnly}>
       <NavigationItemList />

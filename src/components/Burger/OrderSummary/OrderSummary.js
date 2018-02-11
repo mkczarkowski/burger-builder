@@ -17,10 +17,10 @@ const orderSummary = props => {
       <p>A delicious burger with the following ingredients:</p>
       <ul>{order}</ul>
       <p>Continue to Checkout?</p>
-      <Button type="Danger" clicked={props.purchaseCancelled}>
+      <Button type="Danger" handleClick={props.purchaseCancelled}>
         CANCEL
       </Button>
-      <Button type="Success" clicked={props.purchaseContinued}>
+      <Button type="Success" handleClick={props.purchaseContinued}>
         CONTINUE
       </Button>
     </Fragment>
