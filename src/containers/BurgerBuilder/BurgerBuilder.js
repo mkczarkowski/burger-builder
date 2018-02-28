@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import axios from "../../../config/axios/axios-orders";
 
 import Burger from "../../components/Burger/Burger";
-import BuildControls from "../../components/Burger/BuildControlList/BuildControlList";
+import BuildControlList from "../../components/Burger/BuildControlList/BuildControlList";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
@@ -87,31 +87,19 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinueHandler() {
-    this.setState({ isLoading: true }, sendOrder);
+    const ingredientsSearchParams = Object.keys(this.state.ingredients).reduce(
+      (acc, type) => {
+        return `${type}=${this.state.ingredients[type]}${acc && `&${acc}`}`;
+      },
+      ""
+    );
 
-    function sendOrder() {
-      const order = {
-        ingredients: this.state.ingredients,
-        price: this.state.totalPrice,
-        customer: {
-          name: "Marcin",
-          address: {
-            street: "Testowa 1",
-            zipCode: "85-000",
-            country: "Poland"
-          },
-          email: "test@test.com"
-        },
-        deliveryMethod: "fastest"
-      };
-      axios
-        .post("/orders.json", order)
-        .then(response => {
-          console.log(response);
-          this.setState({ isLoading: false, isPurchasing: false });
-        })
-        .catch(err => console.log(err));
-    }
+    this.props.history.push({
+      pathname: "/checkout",
+      search: `${ingredientsSearchParams}&price=${this.state.totalPrice}`
+    });
+
+    this.props.history.goForward();
   }
 
   render() {
@@ -135,7 +123,7 @@ class BurgerBuilder extends Component {
     ) : this.state.ingredients ? (
       <Fragment>
         <Burger ingredients={this.state.ingredients} />
-        <BuildControls
+        <BuildControlList
           ingredientAdded={this.addIngredientHandler}
           ingredientRemoved={this.removeIngredientHandler}
           disabled={areDisabled}

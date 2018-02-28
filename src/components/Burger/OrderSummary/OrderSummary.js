@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 
 import Button from "../../UI/Button/Button";
 
@@ -11,6 +12,9 @@ const orderSummary = props => {
       </li>
     );
   });
+
+
+
   return (
     <Fragment>
       <h3>Your order</h3>
@@ -21,7 +25,7 @@ const orderSummary = props => {
         CANCEL
       </Button>
       <Button type="Success" handleClick={props.purchaseContinued}>
-        CONTINUE
+          CONTINUE
       </Button>
     </Fragment>
   );
