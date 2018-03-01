@@ -14,7 +14,10 @@ class Orders extends Component {
     axios
       .get("/orders.json")
       .then(({ data: orders }) => {
-        this.setState({ orders: [orders] });
+        console.log(orders);
+        this.setState(prevState => ({
+          orders: [...prevState.orders, orders]
+        }));
       })
       .catch(() => this.setState({ hasErrorOccurred: true }));
   }
@@ -32,7 +35,8 @@ class Orders extends Component {
           price = order[orderId].price;
           key = orderId; // Use firebase id as key for Order component
         }
-        return <Order {...ingredients} price={price} key={key} />;
+        console.log(ingredients);
+        return <Order ingredients={ingredients} price={price} key={key} />;
       })
     ) : (
       <Spinner />
