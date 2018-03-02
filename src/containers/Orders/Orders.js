@@ -14,9 +14,10 @@ class Orders extends Component {
     axios
       .get("/orders.json")
       .then(({ data: orders }) => {
-        console.log(orders);
+        const arrOfOrders = Object.values(orders); // Convert object containing orders  to array of orders
+
         this.setState(prevState => ({
-          orders: [...prevState.orders, orders]
+          orders: [...prevState.orders, ...arrOfOrders]
         }));
       })
       .catch(() => this.setState({ hasErrorOccurred: true }));
@@ -24,19 +25,9 @@ class Orders extends Component {
   render() {
     let ordersContent = this.state.hasErrorOccurred ? (
       <p style={{ textAlign: "center" }}>Orders can't be loaded</p>
-    ) : this.state.orders ? (
-      this.state.orders.map(order => {
-        let ingredients = {};
-        let price = 0;
-        let key = "";
-        for (let orderId of Object.keys(order)) {
-          // Access nested order content via outer firebase id property
-          ingredients = order[orderId].ingredients;
-          price = order[orderId].price;
-          key = orderId; // Use firebase id as key for Order component
-        }
-        console.log(ingredients);
-        return <Order ingredients={ingredients} price={price} key={key} />;
+    ) : this.state.orders.length > 0 ? (
+      this.state.orders.map(({ ingredients, price}) => {
+        return <Order ingredients={ingredients} price={price} key={price + Math.random()} />;
       })
     ) : (
       <Spinner />

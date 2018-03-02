@@ -1,19 +1,20 @@
 import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
 
 import Button from "../../UI/Button/Button";
 
-const orderSummary = props => {
-  const order = Object.keys(props.ingredients).map(type => {
+const orderSummary = ({
+  ingredients,
+  purchaseContinued,
+  purchaseCancelled
+}) => {
+  const order = Object.keys(ingredients).map(type => {
     return (
       <li key={type}>
         <span style={{ textTransform: "capitalize" }}>{type}</span>:{" "}
-        {props.ingredients[type]}
+        {ingredients[type]}
       </li>
     );
   });
-
-
 
   return (
     <Fragment>
@@ -21,11 +22,11 @@ const orderSummary = props => {
       <p>A delicious burger with the following ingredients:</p>
       <ul>{order}</ul>
       <p>Continue to Checkout?</p>
-      <Button type="Danger" handleClick={props.purchaseCancelled}>
+      <Button type="Danger" handleClick={purchaseCancelled}>
         CANCEL
       </Button>
-      <Button type="Success" handleClick={props.purchaseContinued}>
-          CONTINUE
+      <Button type="Success" handleClick={purchaseContinued}>
+        CONTINUE
       </Button>
     </Fragment>
   );
