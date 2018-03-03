@@ -2,14 +2,28 @@ import React from "react";
 
 import classes from "./Input.css";
 
-const Input = ({ inputType, label, value, attributes, handleChange }) => {
+const Input = ({
+  inputType,
+  label,
+  value,
+  attributes,
+  valid,
+  shouldValidate,
+  touched,
+  handleChange
+}) => {
   let inputElement = null;
+  const inputClasses = [classes.InputElement];
+
+  if (valid === false && shouldValidate && touched) {
+    inputClasses.push(classes.Invalid);
+  }
 
   switch (inputType) {
     case "input": {
       inputElement = (
         <input
-          className={classes.InputElement}
+          className={inputClasses.join(" ")}
           {...attributes}
           value={value}
           onChange={handleChange}
@@ -19,7 +33,7 @@ const Input = ({ inputType, label, value, attributes, handleChange }) => {
     }
     case "select": {
       inputElement = (
-        <select className={classes.InputElement} onChange={handleChange}>
+        <select className={inputClasses.join(" ")} onChange={handleChange}>
           {attributes.options.map(({ value, displayValue }) => (
             <option key={value} value={value}>
               {displayValue}
@@ -32,7 +46,7 @@ const Input = ({ inputType, label, value, attributes, handleChange }) => {
     default: {
       inputElement = (
         <input
-          className={classes.InputElement}
+          className={inputClasses.join(" ")}
           {...attributes}
           value={value}
           onChange={handleChange}

@@ -10,26 +10,46 @@ import classes from "./ContactData.css";
 class ContactData extends Component {
   state = {
     orderForm: {
-      name: getInputConfiguration("input", {
-        type: "text",
-        placeholder: "Your name"
-      }),
-      street: getInputConfiguration("input", {
-        type: "text",
-        placeholder: "Your street"
-      }),
-      zipCode: getInputConfiguration("input", {
-        type: "text",
-        placeholder: "Your zip code"
-      }),
-      country: getInputConfiguration("input", {
-        type: "text",
-        placeholder: "Your country"
-      }),
-      email: getInputConfiguration("input", {
-        type: "text",
-        placeholder: "Your email"
-      }),
+      name: getInputConfiguration(
+        "input",
+        {
+          type: "text",
+          placeholder: "Your name"
+        },
+        { required: true }
+      ),
+      street: getInputConfiguration(
+        "input",
+        {
+          type: "text",
+          placeholder: "Your street"
+        },
+        { required: true }
+      ),
+      zipCode: getInputConfiguration(
+        "input",
+        {
+          type: "text",
+          placeholder: "Your zip code"
+        },
+        { required: true, minLength: 6, maxLength: 6 }
+      ),
+      country: getInputConfiguration(
+        "input",
+        {
+          type: "text",
+          placeholder: "Your country"
+        },
+        { required: true }
+      ),
+      email: getInputConfiguration(
+        "input",
+        {
+          type: "text",
+          placeholder: "Your email"
+        },
+        { required: true }
+      ),
       deliveryMethod: getInputConfiguration("select", {
         options: [
           { value: "fastest", displayValue: "Fastest" },
@@ -45,9 +65,14 @@ class ContactData extends Component {
     this.setState({ isLoading: true }, sendOrder);
 
     function sendOrder() {
+      const formData = {};
+      for (let formElementId in this.state.orderForm) {
+        formData[formElementId] = this.state.orderForm[formElementId].value;
+      }
       const order = {
         ingredients: this.props.ingredients,
-        price: this.props.price
+        price: this.props.price,
+        formData
       };
       axios
         .post("/orders.json", order)
@@ -58,13 +83,40 @@ class ContactData extends Component {
     }
   };
 
+  checkValidity(value, rules) {
+    let isValid = false;
+
+    if (rules.required) {
+      isValid = value.trim() !== "";
+    }
+
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+
+    if (rules.maxLength) {
+      isValid = value.length <= rules.minLength && isValid;
+    }
+
+    return isValid;
+  }
+
   inputChangedHandler = (event, id) => {
     event.persist();
+    const inputValue = event.target.value;
     this.setState(prevState => {
       return {
         orderForm: {
           ...prevState.orderForm,
-          [id]: { ...prevState.orderForm[id], value: event.target.value }
+          [id]: {
+            ...prevState.orderForm[id],
+            value: inputValue,
+            isValid: this.checkValidity(
+              inputValue,
+              prevState.orderForm[id].validation
+            ),
+            touched: true
+          }
         }
       };
     });
@@ -78,7 +130,7 @@ class ContactData extends Component {
         config: this.state.orderForm[key]
       });
     }
-    console.log(formElementsArray);
+
     return (
       <div className={classes.ContactData}>
         <h4>Enter your Contact Data</h4>
@@ -87,7 +139,17 @@ class ContactData extends Component {
         ) : (
           <form>
             {formElementsArray.map(
-              ({ id, config: { inputType, attributes, value } }) => (
+              ({
+                id,
+                config: {
+                  inputType,
+                  attributes,
+                  validation,
+                  value,
+                  isValid,
+                  touched
+                }
+              }) => (
                 <Input
                   inputType={inputType}
                   label={id}
@@ -95,6 +157,9 @@ class ContactData extends Component {
                   key={id}
                   attributes={attributes}
                   value={value}
+                  valid={isValid}
+                  shouldValidate={Object.keys(validation).length > 0}
+                  touched={touched}
                   handleChange={event => this.inputChangedHandler(event, id)}
                 />
               )

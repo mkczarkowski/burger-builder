@@ -1,8 +1,16 @@
-const getInputConfiguration = (inputType, attributes, value = "") => {
+const getInputConfiguration = (
+  inputType,
+  attributes,
+  validation = {},
+  value = "",
+) => {
   return {
     inputType,
     attributes,
-    value
+    validation,
+    value,
+    isValid: false,
+    touched: false
   };
 };
 
