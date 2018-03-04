@@ -50,13 +50,19 @@ class ContactData extends Component {
         },
         { required: true }
       ),
-      deliveryMethod: getInputConfiguration("select", {
-        options: [
-          { value: "fastest", displayValue: "Fastest" },
-          { value: "cheapest", displayValue: "Cheapest" }
-        ]
-      })
+      deliveryMethod: getInputConfiguration(
+        "select",
+        {
+          options: [
+            { value: "fastest", displayValue: "Fastest" },
+            { value: "cheapest", displayValue: "Cheapest" }
+          ]
+        },
+        {},
+        "fastest"
+      )
     },
+    isOrderFormValid: false,
     isLoading: false
   };
 
@@ -104,22 +110,36 @@ class ContactData extends Component {
   inputChangedHandler = (event, id) => {
     event.persist();
     const inputValue = event.target.value;
-    this.setState(prevState => {
-      return {
-        orderForm: {
-          ...prevState.orderForm,
-          [id]: {
-            ...prevState.orderForm[id],
-            value: inputValue,
-            isValid: this.checkValidity(
-              inputValue,
-              prevState.orderForm[id].validation
-            ),
-            touched: true
+    this.setState(
+      prevState => {
+        return {
+          orderForm: {
+            ...prevState.orderForm,
+            [id]: {
+              ...prevState.orderForm[id],
+              value: inputValue,
+              isValid: this.checkValidity(
+                inputValue,
+                prevState.orderForm[id].validation
+              ),
+              touched: true
+            }
           }
-        }
-      };
-    });
+        };
+      },
+      () => {
+        this.setState({ isOrderFormValid: checkIsOrderFormValid() });
+      }
+    );
+
+    const checkIsOrderFormValid = () => {
+      const orderForm = { ...this.state.orderForm };
+      return Object.keys(orderForm).every(inputName => {
+        return orderForm[inputName].shouldValidate
+          ? orderForm[inputName].isValid
+          : true;
+      });
+    };
   };
 
   render() {
@@ -147,6 +167,7 @@ class ContactData extends Component {
                   validation,
                   value,
                   isValid,
+                  shouldValidate,
                   touched
                 }
               }) => (
@@ -158,13 +179,17 @@ class ContactData extends Component {
                   attributes={attributes}
                   value={value}
                   valid={isValid}
-                  shouldValidate={Object.keys(validation).length > 0}
+                  shouldValidate={shouldValidate}
                   touched={touched}
                   handleChange={event => this.inputChangedHandler(event, id)}
                 />
               )
             )}
-            <Button type="Success" handleClick={this.orderHandler}>
+            <Button
+              type="Success"
+              handleClick={this.orderHandler}
+              isEnabled={this.state.isOrderFormValid}
+            >
               Order
             </Button>
           </form>
