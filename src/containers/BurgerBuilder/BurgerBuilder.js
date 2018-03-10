@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from "react";
 import axios from "../../../config/axios/axios-orders";
+import { connect } from "react-redux";
+import * as actionTypes from "../../store/actions";
 
 import Burger from "../../components/Burger/Burger";
 import BuildControlList from "../../components/Burger/BuildControlList/BuildControlList";
@@ -34,12 +36,12 @@ class BurgerBuilder extends Component {
   }
 
   componentDidMount = () => {
-    axios
-      .get("/ingredients.json")
-      .then(({ data: ingredients }) => {
-        this.setState({ ingredients });
-      })
-      .catch(() => this.setState({ hasErrorOccurred: true }));
+    // axios
+    //   .get("/ingredients.json")
+    //   .then(({ data: ingredients }) => {
+    //     this.setState({ ingredients });
+    //   })
+    //   .catch(() => this.setState({ hasErrorOccurred: true }));
   };
 
   updatePurchaseableState() {
@@ -149,4 +151,21 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default errorHandler(BurgerBuilder, axios);
+const mapStateToProps = state => {
+  return {
+    ingredients: state.ingredients,
+    price: state.totalPrice
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onIngredientsAdd: dispatch({ type: actionTypes.INGREDIENT_ADD }),
+    onIngredientsRemove: dispatch({ type: actionTypes.INGREDIENT_REMOVE }),
+    onPriceSet: dispatch({ type: actionTypes.PRICE_SET })
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  errorHandler(BurgerBuilder, axios)
+);
