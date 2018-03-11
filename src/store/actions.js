@@ -1,3 +1,2 @@
 export const INGREDIENT_ADD = "INGREDIENT_ADD";
 export const INGREDIENT_REMOVE = "INGREDIENT_REMOVE";
-export const PRICE_SET = "PRICE_SET";
